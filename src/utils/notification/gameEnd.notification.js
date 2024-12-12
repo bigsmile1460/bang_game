@@ -2,8 +2,6 @@ import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
 import { createResponse } from '../response/createResponse.js';
 import { removeGameSession } from '../../sessions/game.session.js';
-import { roomManager } from '../../classes/manager/room.manager.js';
-import { saveRecord } from '../../db/record/record.db.js';
 
 export const gameEndNotification = async (room) => {
   try {
@@ -67,14 +65,12 @@ export const gameEndNotification = async (room) => {
       // 기록 저장
       const losers = room.users.filter((user) => !winners.some((winner) => winner.id === user.id));
       winners.forEach(async (winner) => {
-        await saveRecord(winner.id, true, winner.characterData.roleType);
+        // await saveRecord(winner.id, true, winner.characterData.roleType);
       });
 
       losers.forEach(async (loser) => {
-        await saveRecord(loser.id, false, loser.characterData.roleType);
+        // await saveRecord(loser.id, false, loser.characterData.roleType);
       });
-
-      roomManager.deleteRoom(room.id);
       room.users.forEach((user) => {
         user.releaseUser()
         user.socket.write(createResponse(PACKET_TYPE.GAME_END_NOTIFICATION, 0, responsePayload));

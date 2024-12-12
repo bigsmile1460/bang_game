@@ -1,7 +1,7 @@
 import { PACKET_TYPE } from '../../constants/header.js';
-import { characterPositions } from '../../init/loadPositions.js';
+// import { characterPositions } from '../../init/loadPositions.js';
 import { Packets } from '../../init/loadProtos.js';
-import { findGameById } from '../../sessions/game.session.js';
+// import { findGameById } from '../../sessions/game.session.js';
 import { getUser } from '../../sessions/user.session.js';
 import { gameStartNotification } from '../../utils/notification/gameStart.notification.js';
 import { createResponse } from '../../utils/response/createResponse.js';
@@ -9,8 +9,15 @@ import { createResponse } from '../../utils/response/createResponse.js';
 export const gameStartHandler = (socket, payload) => {
   // 현재 방, 해당 방의 유저들 정보
   const ownerUser = getUser(socket.jwt);
-  const currentGame = findGameById(ownerUser.roomId);
+  // const currentGame = findGameById(ownerUser.roomId);
   const inGameUsers = currentGame.users;
+
+  const redis = RedisManager.getInstance();  
+  const parsedMessage = redis.onGameStart();
+
+  console.log("parsedMessage:",parsedMessage)
+
+
 
   if (currentGame.state !== Packets.RoomStateType.PREPARE) {
     const errorResponse = {
@@ -30,7 +37,7 @@ export const gameStartHandler = (socket, payload) => {
     }
 
     const randId = Math.floor(Math.random() * 20);
-    selectedPositions.add(characterPositions[randId]); // 0부터 방의 20 길이까지의 랜덤
+    // selectedPositions.add(characterPositions[randId]); // 0부터 방의 20 길이까지의 랜덤
   }
 
   // 선택된 위치 정보는 JSON의 id고, 그걸 접속한 유저의 아이디로 치환

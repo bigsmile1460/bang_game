@@ -1,6 +1,6 @@
 import { config } from '../config/config.js';
 import { PACKET_TYPE } from '../constants/header.js';
-import { getHandlerByPacketType } from '../handler/index.js';
+// import { getHandlerByPacketType } from '../handler/index.js';
 import { Packets } from '../init/loadProtos.js';
 import getPacketTypeName from '../utils/getPacketTypeName.js';
 
@@ -50,7 +50,7 @@ export const onData = (socket) => async (data) => {
 
     try {
       const decodedPacket = Packets.GamePacket.decode(payload);
-      const handler = getHandlerByPacketType(payloadOneofCase);
+      // const handler = getHandlerByPacketType(payloadOneofCase);
       if (handler) {
         const t0 = performance.now();
         await handler(socket, decodedPacket);
