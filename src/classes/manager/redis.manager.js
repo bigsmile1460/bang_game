@@ -159,11 +159,11 @@ class RedisManager {
     this.redisClient.on('message', (channel, message) => {
       // 게임 시작(세션 생성, 등등)
       const parsedMessage = JSON.parse(message);
-      console.log(parsedMessage)     
+      // console.log(parsedMessage)     
       
       parsedMessage.users.forEach((user) => {
         //user.socket.jwt
-        gameStartHandler()
+        // gameStartHandler()
         // 현재: 클라이언트 -> 로비서버
         // 변경내용: 클라이언트 -> Nginx -> 로비서버 게이트웨이
         // 변경내용: 클라이언트 -> Nginx -> 게임서버
