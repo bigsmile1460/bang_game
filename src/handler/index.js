@@ -1,6 +1,7 @@
 import { PACKET_TYPE } from '../constants/header.js';
 import CustomError from '../utils/error/customError.js';
 import { gameStartHandler } from './room/gameStart.handler.js';
+import { healthCheckHandler } from './healthCheck.handler.js';
 // import { useCardHandler } from './card/useCard.handler.js';
 // import { positionUpdateHandler } from './game/positionUpdate.handler.js';
 // import { reactionHandler } from './game/reaction.handler.js';
@@ -18,6 +19,7 @@ const handlers = {
   // [PACKET_TYPE.FLEA_MARKET_PICK_REQUEST]: { handler: fleaMarketPickHandler },
   // [PACKET_TYPE.CARD_SELECT_REQUEST]: { handler: cardSelectHandler },
   // [PACKET_TYPE.PASS_DEBUFF_REQUEST]: { handler: passDebuffHandler },
+  [PACKET_TYPE.HEALTHCHECK_REQUEST]: {handler: healthCheckHandler}
 };
 
 export const getHandlerByPacketType = (packetType) => {
