@@ -1,5 +1,6 @@
 import Redis from 'ioredis';
 import { config } from '../../config/config.js';
+import { addGameSession } from '../../sessions/game.session.js';
 
 class RedisManager {
   static #instance; // private
@@ -159,27 +160,10 @@ class RedisManager {
     this.redisClient.on('message', (channel, message) => {
       // 게임 시작(세션 생성, 등등)
       const parsedMessage = JSON.parse(message);
-      // console.log(parsedMessage)     
-      
-      parsedMessage.users.forEach((user) => {
-        //user.socket.jwt
-        // gameStartHandler()
-        // 현재: 클라이언트 -> 로비서버
-        // 변경내용: 클라이언트 -> Nginx -> 로비서버 게이트웨이
-        // 변경내용: 클라이언트 -> Nginx -> 게임서버
-        // 게임서버는 들어온 클라이언트들의 JWT를 이용해서 redis에 있는 정보들을 세션으로 등록
-        // 클라이언트 정보를 소켓으로 등록하고 게임 시작
-  
-      })
-      return JSON.parse(message);
+
+      return addGameSession(parsedMessage); 
     });
   }
-
-
-
-
-
-
 
   disconnect() {
     this.redisClient.quit();
