@@ -1,7 +1,7 @@
 // import { leaveRoomHandler } from '../handler/room/leaveRoom.handler.js';
 // import { Packets } from '../init/loadProtos.js';
 // import { findGameById } from '../sessions/game.session.js';
-import { getUser, removeUser } from '../sessions/user.session.js';
+import { removeUser } from '../sessions/user.session.js';
 
 export const onEnd = (socket) => () => {
   try {
