@@ -286,6 +286,16 @@ message S2CAnimationNotification {
     AnimationType animationType = 2;
 }
 
+// 46번
+message C2SHealthCheckRequest {
+    string jwt = 1;
+}
+
+// 47번 
+message S2CHealthCheckResponse {
+    bool success = 1;
+}
+
 // 최상위 GamePacket 메시지
 message GamePacket {
     oneof payload {
@@ -377,6 +387,10 @@ message GamePacket {
 
         // 효과 알림
         S2CAnimationNotification animationNotification = 45;
+
+        // health check
+        C2SHealthCheckRequest healthCheckRequest = 46;
+        S2CHealthCheckResponse healthCheckResponse = 47;
     }
 }
 
