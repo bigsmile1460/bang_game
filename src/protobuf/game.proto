@@ -289,6 +289,7 @@ message S2CAnimationNotification {
 // 46번
 message C2SHealthCheckRequest {
     string jwt = 1;
+    int32 roomId = 2;
 }
 
 // 47번 
