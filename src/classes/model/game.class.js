@@ -1,8 +1,8 @@
 import { createResponse } from '../../utils/response/createResponse.js';
 import phaseTime from '../../constants/phaseTime.js';
 import { Packets } from '../../init/loadProtos.js';
-// import { phaseUpdateNotification } from '../../utils/notification/phaseUpdate.notification.js';
-// import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
+import { phaseUpdateNotification } from '../../utils/notification/phaseUpdate.notification.js';
+import userUpdateNotification from '../../utils/notification/userUpdate.notification.js';
 import EventManager from '../manager/event.manager.js';
 import IntervalManager from '../manager/interval.manager.js';
 import { PACKET_TYPE } from '../../constants/header.js';
@@ -51,33 +51,33 @@ class Game {
     console.log(this.deck);
   }
 
-//   changePhase() {
-//     const time = phaseTime[this.currentPhase];
+  changePhase() {
+    const time = phaseTime[this.currentPhase];
 
-//     this.intervalManager.removeInterval(this.id, 'gameChangePhase');
-//     this.intervalManager.addInterval(
-//       this.id,
-//       () => {
-//         try {
-//           const tmp = this.currentPhase;
-//           this.currentPhase = this.nextPhase;
-//           this.nextPhase = tmp;
-//           const responseNotification = phaseUpdateNotification(this);
-//           this.users.forEach((user) => {
-//             user.socket.write(
-//               createResponse(PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, 0, responseNotification),
-//             );
-//           });
-//           userUpdateNotification(this.users);
-//           this.changePhase();
-//         } catch (err) {
-//           console.error(err);
-//         }
-//       },
-//       time,
-//       'gameChangePhase',
-//     );
-//   }
+    this.intervalManager.removeInterval(this.id, 'gameChangePhase');
+    this.intervalManager.addInterval(
+      this.id,
+      () => {
+        try {
+          const tmp = this.currentPhase;
+          this.currentPhase = this.nextPhase;
+          this.nextPhase = tmp;
+          const responseNotification = phaseUpdateNotification(this);
+          this.users.forEach((user) => {
+            user.socket.write(
+              createResponse(PACKET_TYPE.PHASE_UPDATE_NOTIFICATION, 0, responseNotification),
+            );
+          });
+          userUpdateNotification(this.users);
+          this.changePhase();
+        } catch (err) {
+          console.error(err);
+        }
+      },
+      time,
+      'gameChangePhase',
+    );
+  }
 
   isFullRoom() {
     return parseInt(this.users.length) >= parseInt(this.maxUserNum) ? true : false;
@@ -100,6 +100,10 @@ class Game {
     return this.users.find((user) => user.id === userId);
   }
 
+  findInGameUserByJwt(jwt) {
+    return this.users.find((user) => user.socket.jwt === jwt);
+  }
+
   findInGameUserByState(state) {
     return this.users.find((user) => user.characterData.stateInfo.state === state);
   }
@@ -112,9 +116,6 @@ class Game {
   }
 
   removeUserFromFleaMarket() {
-    // const index = this.fleaMarketUsers.findIndex((u) => u.id === user.id);
-    // if (index !== -1) {
-    // }
     this.fleaMarketUsers.splice(0, 1);
   }
 
