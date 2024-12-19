@@ -1,5 +1,5 @@
-import { PACKET_TYPE } from '/../constants/header.js';
-import { createResponse } from '/../utils/response/createResponse.js';
+import { PACKET_TYPE } from '../constants/header.js';
+import { createResponse } from '../utils/response/createResponse.js';
 import jwt from 'jsonwebtoken';
 import { socketManager } from '../classes/manager/socketManager.js';
 
