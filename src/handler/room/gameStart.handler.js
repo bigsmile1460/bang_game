@@ -1,4 +1,3 @@
-import RedisManager from '../../classes/manager/redis.manager.js';
 import { getCharacterPositions } from '../../constants/characterPositions.js';
 import { PACKET_TYPE } from '../../constants/header.js';
 import { Packets } from '../../init/loadProtos.js';
@@ -56,33 +55,14 @@ export const gameStartHandler = (socket, payload) => {
 
   // 게임 유저들 위치 정보 알림
   const notificationPayload = gameStartNotification(inGameUsers, posArr);
-  // 방장에게 먼저 메시지 전송
-  const host = inGameUsers[0];
-  if (host) {
-    if (host.socket) {
-      try {
-        host.socket.write(
-          createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload),
-        );
-      } catch (error) {
-        console.error(`Error writing to socket for host ${host.id}:`, error);
-      }
-    } else {
-      console.error(`Host ${host.id} has no socket connection.`);
-    }
-  }
-
-  // 나머지 유저들에게 메시지 전송
   inGameUsers.forEach((user, index) => {
-    if (index !== 0) {
-      // 첫 번째 유저(방장)는 제외하고 나머지 유저들에게만
-      try {
-        user.socket.write(
-          createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload),
-        );
-      } catch (error) {
-        console.error(`Error writing to socket for user ${user.id}:`, error);
-      }
+
+    try {
+      user.socket.write(
+        createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload),
+      );
+    } catch (error) {
+      console.error(`Error writing to socket for user ${user.id}:`, error);
     }
   });
 
@@ -110,6 +90,6 @@ export const gameStartHandler = (socket, payload) => {
 
   // 페이즈 시작
   currentGame.changePhase();
-
-  // socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
+  
+  socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
 };
