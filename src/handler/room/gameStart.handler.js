@@ -10,16 +10,19 @@ import { createResponse } from '../../utils/response/createResponse.js';
 export const gameStartHandler = (socket, payload) => {
   // 현재 방, 해당 방의 유저들 정보
   const ownerUser = getUserBySocket(socket);
+  if (!ownerUser) {
+    console.log('ownerUser 없음');
+  }
   const currentGame = findGameById(ownerUser.roomId);
   const characterPositions = getCharacterPositions();
   //소켓 연결 안된 유저들 사망 처리
   currentGame.users.forEach((user) => {
     const isConnect = getUserBySocket(user.socket);
-    if (!isConnect){
+    if (!isConnect) {
       user.setHp(0);
     }
   });
-  
+
   const inGameUsers = currentGame.users; // healthCheckHandler에서 새로운 socket으로 덮어씌워진 최신 users
 
   if (currentGame.state !== Packets.RoomStateType.PREPARE) {
@@ -53,8 +56,34 @@ export const gameStartHandler = (socket, payload) => {
 
   // 게임 유저들 위치 정보 알림
   const notificationPayload = gameStartNotification(inGameUsers, posArr);
-  inGameUsers.forEach((user) => {
-    user.socket.write(createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload));
+  // 방장에게 먼저 메시지 전송
+  const host = inGameUsers[0];
+  if (host) {
+    if (host.socket) {
+      try {
+        host.socket.write(
+          createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload),
+        );
+      } catch (error) {
+        console.error(`Error writing to socket for host ${host.id}:`, error);
+      }
+    } else {
+      console.error(`Host ${host.id} has no socket connection.`);
+    }
+  }
+
+  // 나머지 유저들에게 메시지 전송
+  inGameUsers.forEach((user, index) => {
+    if (index !== 0) {
+      // 첫 번째 유저(방장)는 제외하고 나머지 유저들에게만
+      try {
+        user.socket.write(
+          createResponse(PACKET_TYPE.GAME_START_NOTIFICATION, 0, notificationPayload),
+        );
+      } catch (error) {
+        console.error(`Error writing to socket for user ${user.id}:`, error);
+      }
+    }
   });
 
   // 게임 시작 성공
@@ -82,5 +111,5 @@ export const gameStartHandler = (socket, payload) => {
   // 페이즈 시작
   currentGame.changePhase();
 
-  socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
+  // socket.write(createResponse(PACKET_TYPE.GAME_START_RESPOSNE, 0, responsePayload));
 };
