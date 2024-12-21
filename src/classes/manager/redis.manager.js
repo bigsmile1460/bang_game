@@ -156,9 +156,6 @@ class RedisManager {
     this.redisClient.on('message', (channel, message) => {
       // 게임 시작(세션 생성, 등등)
       const parsedMessage = JSON.parse(message);
-      console.log('sub해서 가져온 데이터');
-      console.dir(parsedMessage, { depth: null });
-
       return addGameSession(parsedMessage);
     });
   }

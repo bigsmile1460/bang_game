@@ -15,7 +15,6 @@ export const useCardHandler = (socket, payload) => {
     const currentGame = findGameById(cardUsingUser.roomId);
     const targetUser = currentGame.findInGameUserById(targetUserId);
 
-    console.l;
     console.log('[카드사용] 대상유저:', targetUser);
 
     // 페이즈가 밤이면 에러 리스폰스 반환하기(밤에 카드 사용 막기)
