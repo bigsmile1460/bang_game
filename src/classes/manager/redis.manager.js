@@ -67,7 +67,6 @@ class RedisManager {
     }
   }
 
-
   async getAllHash(key) {
     try {
       const getData = await this.redisClient.hgetall(key);
@@ -84,7 +83,7 @@ class RedisManager {
     try {
       const result = await this.redisClient.hkeys(key);
       return JSON.parse(result);
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }
@@ -92,26 +91,23 @@ class RedisManager {
     try {
       const result = this.redisClient.hexists(key, field);
       return result;
-    } catch(e) {
+    } catch (e) {
       console.error(e);
     }
   }
-  async getHvals(key){
-    try{
+  async getHvals(key) {
+    try {
       const result = await this.redisClient.hvals(key);
       return result;
-    }
-    catch(e){
-    }
+    } catch (e) {}
   }
   //TODO: 해쉬 내부의 특정 값만 삭제할 수 있는 함수
   // hdel(room, 2), hlen(room) -> 필드 개수 길이
-  async delHash(key, field){
-    try{
-        await this.redisClient.hdel(key, field);
-    }
-    catch(e){
-        console.error(e)
+  async delHash(key, field) {
+    try {
+      await this.redisClient.hdel(key, field);
+    } catch (e) {
+      console.error(e);
     }
   }
 
@@ -160,8 +156,10 @@ class RedisManager {
     this.redisClient.on('message', (channel, message) => {
       // 게임 시작(세션 생성, 등등)
       const parsedMessage = JSON.parse(message);
+      console.log('sub해서 가져온 데이터');
+      console.dir(parsedMessage, { depth: null });
 
-      return addGameSession(parsedMessage); 
+      return addGameSession(parsedMessage);
     });
   }
 
@@ -169,7 +167,6 @@ class RedisManager {
     this.redisClient.quit();
     console.log('레디스 연결 해제');
   }
-
 }
 
 export default RedisManager;
