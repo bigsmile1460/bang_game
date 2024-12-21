@@ -12,7 +12,13 @@ export const addGameSession = (roomData) => {
     user.characterData.handCards = new Map(Object.entries(user.characterData.handCards));
     user.characterData = plainToInstance(CharacterData, user.characterData);
     const newUser = plainToInstance(User, user);
-    console.log(newUser.handCards);
+    
+    // 사용자별 카드 배분
+    const gainCards = roomData.deck.splice(0, newUser.characterData.hp);
+    for (const card of gainCards) {
+      newUser.addHandCard(card);
+    }
+    
     users.push(newUser);
   });
   const room = plainToInstance(Game, roomData);
