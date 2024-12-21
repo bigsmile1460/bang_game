@@ -3,6 +3,8 @@ import User from '../classes/model/user.class.js';
 import CharacterData from '../classes/model/characterData.class.js';
 import { plainToInstance } from 'class-transformer';
 import { gameSession } from './session.js';
+import EventManager from '../classes/manager/event.manager.js';
+import IntervalManager from '../classes/manager/interval.manager.js';
 
 // 새 게임 세션 대신 기존 json형태의 게임 객체를 복원하고 넣어주는 역할할
 // roomData << raw 객체체
@@ -18,9 +20,11 @@ export const addGameSession = (roomData) => {
     for (const card of gainCards) {
       newUser.addHandCard(card);
     }
-    
+
     users.push(newUser);
   });
+  roomData.events = new EventManager(); 
+  roomData.intervalManager = new IntervalManager();
   const room = plainToInstance(Game, roomData);
   room.users = users;
 
