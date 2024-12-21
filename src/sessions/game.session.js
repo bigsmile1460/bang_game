@@ -7,19 +7,18 @@ import { gameSession } from './session.js';
 // 새 게임 세션 대신 기존 json형태의 게임 객체를 복원하고 넣어주는 역할할
 // roomData << raw 객체체
 export const addGameSession = (roomData) => {
-    let users = [];
-    roomData.users.forEach((user) => {
-      user.characterData.handCards = new Map(Object.entries(user.characterData.handCards));
-      user.characterData = plainToInstance(CharacterData, user.characterData);
-      const newUser = plainToInstance(User, user);
-      console.log(newUser.handCards);
-      users.push(newUser);
-    });
-    const room = plainToInstance(Game, roomData);
-    room.users = users;
+  let users = [];
+  roomData.users.forEach((user) => {
+    user.characterData.handCards = new Map(Object.entries(user.characterData.handCards));
+    user.characterData = plainToInstance(CharacterData, user.characterData);
+    const newUser = plainToInstance(User, user);
+    console.log(newUser.handCards);
+    users.push(newUser);
+  });
+  const room = plainToInstance(Game, roomData);
+  room.users = users;
 
   gameSession.push(room);
-  return room;
 };
 
 export const removeGameSession = (gameId) => {
